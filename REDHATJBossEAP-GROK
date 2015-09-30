@@ -1,0 +1,33 @@
+###################################################
+# Sample Logstash v1.5.x Configuration for RedHat JBOSS EAP App Server 6.2
+#
+####################################################
+# v1.0 Doug McClure 9/23/15 RedHat JBOSS EAP App Server 6.2
+#
+####################################################
+
+################################################################################################################################################################
+
+# RedHat JBOSS EAP Logs - server.log
+# multiline messages seen in provided samples
+
+#05:53:41,528 INFO  [org.foo.core.server] (ServerService Thread Pool -- 1) HQ221000: live server is starting with configuration foo Configuration (clustered=true,backup=false,sharedStore=true,journalDirectory=/opt/jboss/eap62/domain/servers/foobar1/data/messagingjournal,bindingsDirectory=/opt/jboss/eap62/domain/servers/foobar1/data/messagingbindings,largeMessagesDirectory=/opt/jboss/eap62/domain/servers/foobar1/data/messaginglargemessages,pagingDirectory=/opt/jboss/eap62/domain/servers/foobar1/data/messagingpaging)
+#05:53:58,154 WARN  [org.foo.core.server] (Thread-5 (foo-client-global-threads-2119)) HQ295: Connection failed with failedOver=false: #fooException[errorType=NOT_CONNECTED message=HQ6: Channel disconnected]
+#	at org.foo.core.client.impl.ClientSessionFactoryImpl.connectionDestroyed(ClientSessionFactoryImpl.java:425)
+#	at org.foo.core.remoting.impl.netty.NettyConnector$Listener$1.run(NettyConnector.java:880)
+#	at org.foo.utils.OrderedExecutorFactory$OrderedExecutor$1.run(OrderedExecutorFactory.java:105)
+#	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+#	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+#	at java.lang.Thread.run(Thread.java:745)
+#
+#05:53:59,794 INFO  [org.jboss.as.clustering] (Incoming-4,shared=udp) JBAS010226: New cluster view for partition web: 24 (org.jboss.as.clustering.impl.CoreGroupCommunicationService$GroupView@21aae285 delta: -1, merge: false)
+#05:53:59,795 INFO  [org.infinispan.remoting.transport.jgroups.JGroupsTransport] (Incoming-4,shared=udp) ISPN000094: Received new cluster view: [bar1:foobar1/web|24] [vbar:foobar1/web, fbar:foobar1/web]
+#05:54:00,951 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-21) Preventing installation of default bean: org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration
+
+JBOSSEAPTIME %{HOUR}:%{MINUTE}:%{SECOND}
+
+JBOSSEAP1 (?m)%{JBOSSEAPTIME:timestamp}\s+%{DATA:loglevel}\s+\[%{DATA:class}\]\s+\(%{DATA:thread}\)\s+%{GREEDYDATA:message}
+JBOSSEAP2 (?m)%{JBOSSEAPTIME:timestamp}\s+%{DATA:loglevel}\s+\[%{DATA:class}\]\s+\(%{DATA:thread}\)\s+(%{DATA:messageID}:)?\s+%{GREEDYDATA:message}
+JBOSSEAP3 (?m)%{JBOSSEAPTIME:timestamp}\s+%{DATA:loglevel}\s+\[%{DATA:class}\]\s+\(%{DATA:thread}\)\s+%{GREEDYDATA:message}
+
+################################################################################################################################################################
